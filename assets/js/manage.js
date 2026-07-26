@@ -1,16 +1,198 @@
-async function ownerContext(){const user=await window.bookly.requireUser();if(!user)return null;const p=await window.bookly.getProfile(user.id);if(p.role!=='owner')throw new Error('Owner access required.');return p;}
-document.addEventListener('DOMContentLoaded',async()=>{
- const page=document.body.dataset.page; if(!['services','staff','settings','appointments','customer'].includes(page))return;
- try{const p=await ownerContext();if(!p)return;
- if(page==='services')initCrud('services',p.business_id,['name','description','duration_minutes','price']);
- if(page==='staff')initCrud('staff',p.business_id,['name','title','email','phone']);
- if(page==='appointments')loadAppointments(p.business_id);
- if(page==='settings')initSettings(p.business_id);
- if(page==='customer')loadCustomerPortal();
- }catch(e){document.querySelector('main').innerHTML=`<div class="container"><div class="alert error">${window.bookly.escape(e.message)}</div></div>`;}
+async function ownerContext() {
+  const user = await window.bookly.requireUser('owner');
+  if (!user) return null;
+  return window.bookly.getProfile(user.id);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const page = document.body.dataset.page;
+  if (!['services', 'staff', 'settings', 'appointments', 'customer'].includes(page)) return;
+
+  try {
+    // Customer portal must use customer access, not owner access.
+    if (page === 'customer') {
+      await loadCustomerPortal();
+      return;
+    }
+
+    const profile = await ownerContext();
+    if (!profile) return;
+
+    if (page === 'services') {
+      initCrud('services', profile.business_id, ['name', 'description', 'duration_minutes', 'price']);
+    }
+    if (page === 'staff') {
+      initCrud('staff', profile.business_id, ['name', 'title', 'email', 'phone']);
+    }
+    if (page === 'appointments') {
+      loadAppointments(profile.business_id);
+    }
+    if (page === 'settings') {
+      initSettings(profile.business_id);
+    }
+  } catch (error) {
+    const main = document.querySelector('main');
+    if (main) {
+      main.innerHTML = `<div class="container"><div class="alert error">${window.bookly.escape(error.message)}</div></div>`;
+    }
+    console.error('Bookly page initialization failed:', error);
+  }
 });
-async function initCrud(table,businessId,fields){const form=document.querySelector('#manageForm'),list=document.querySelector('#manageList'),msg=form.querySelector('[data-message]');async function load(){const {data,error}=await window.bookly.db.from(table).select('*').eq('business_id',businessId).order('created_at',{ascending:false});if(error)throw error;list.innerHTML=(data||[]).map(r=>`<div class="list-row"><div><strong>${window.bookly.escape(r.name)}</strong><div class="muted">${window.bookly.escape(r.description||r.title||r.email||'')}</div></div><button class="btn btn-danger" data-delete="${r.id}">Delete</button></div>`).join('')||'<div class="empty">Nothing added yet.</div>';}
- form.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(form),row={business_id:businessId};fields.forEach(k=>{let v=f.get(k);if(v==='')v=null;if(['duration_minutes','price'].includes(k)&&v!==null)v=Number(v);row[k]=v;});const {error}=await window.bookly.db.from(table).insert(row);if(error)return window.bookly.show(msg,error.message);form.reset();window.bookly.show(msg,'Saved.','success');load();});list.addEventListener('click',async e=>{const id=e.target.dataset.delete;if(!id)return;await window.bookly.db.from(table).delete().eq('id',id);load();});load();}
-async function loadAppointments(businessId){const list=document.querySelector('#appointmentsList');const {data,error}=await window.bookly.db.from('appointments').select('*,services(name)').eq('business_id',businessId).order('start_time',{ascending:false});if(error)throw error;list.innerHTML=(data||[]).map(r=>`<div class="list-row"><div><strong>${window.bookly.escape(r.customer_name)}</strong><div class="muted">${window.bookly.escape(r.services?.name||'')} · ${new Date(r.start_time).toLocaleString()}</div></div><select class="field" style="width:auto" data-status="${r.id}">${['pending','confirmed','completed','cancelled','no_show'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select></div>`).join('')||'<div class="empty">No appointments.</div>';list.addEventListener('change',async e=>{if(!e.target.dataset.status)return;await window.bookly.db.from('appointments').update({status:e.target.value}).eq('id',e.target.dataset.status);});}
-async function initSettings(businessId){const form=document.querySelector('#settingsForm'),msg=form.querySelector('[data-message]');const {data:b,error}=await window.bookly.db.from('businesses').select('*').eq('id',businessId).single();if(error)throw error;Object.keys(b).forEach(k=>{if(form.elements[k])form.elements[k].value=b[k]??'';});document.querySelector('#publicLink').value=`${location.origin}${location.pathname.replace('settings.html','business.html')}?business=${b.slug}`;form.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(form);const row={};['name','business_type','description','email','phone','address','city','country','logo_url','timezone','currency'].forEach(k=>row[k]=f.get(k)||null);const {error}=await window.bookly.db.from('businesses').update(row).eq('id',businessId);window.bookly.show(msg,error?error.message:'Settings saved.',error?'error':'success');});}
-async function loadCustomerPortal(){const {data:{user}}=await window.bookly.db.auth.getUser();if(!user){location.href='customer-login.html';return;}const p=await window.bookly.getProfile(user.id);if(p.role!=='customer')throw new Error('Customer access required.');const {data,error}=await window.bookly.db.from('appointments').select('*,businesses(name),services(name)').eq('customer_id',user.id).order('start_time',{ascending:false});if(error)throw error;document.querySelector('#customerAppointments').innerHTML=(data||[]).map(r=>`<div class="list-row"><div><strong>${window.bookly.escape(r.businesses?.name||'Business')}</strong><div class="muted">${window.bookly.escape(r.services?.name||'')} · ${new Date(r.start_time).toLocaleString()}</div></div><span class="pill">${r.status}</span></div>`).join('')||'<div class="empty">No bookings yet.</div>';}
+
+async function initCrud(table, businessId, fields) {
+  const form = document.querySelector('#manageForm');
+  const list = document.querySelector('#manageList');
+  const msg = form.querySelector('[data-message]');
+
+  async function load() {
+    const { data, error } = await window.bookly.db
+      .from(table)
+      .select('*')
+      .eq('business_id', businessId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    list.innerHTML = (data || []).map(row => `
+      <div class="list-row">
+        <div>
+          <strong>${window.bookly.escape(row.name)}</strong>
+          <div class="muted">${window.bookly.escape(row.description || row.title || row.email || '')}</div>
+        </div>
+        <button class="btn btn-danger" type="button" data-delete="${row.id}">Delete</button>
+      </div>
+    `).join('') || '<div class="empty">Nothing added yet.</div>';
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const row = { business_id: businessId };
+
+    fields.forEach(key => {
+      let value = values.get(key);
+      if (value === '') value = null;
+      if (['duration_minutes', 'price'].includes(key) && value !== null) value = Number(value);
+      row[key] = value;
+    });
+
+    const { error } = await window.bookly.db.from(table).insert(row);
+    if (error) {
+      window.bookly.show(msg, error.message);
+      return;
+    }
+
+    form.reset();
+    window.bookly.show(msg, 'Saved.', 'success');
+    await load();
+  });
+
+  list.addEventListener('click', async event => {
+    const id = event.target.dataset.delete;
+    if (!id) return;
+    const { error } = await window.bookly.db.from(table).delete().eq('id', id);
+    if (error) {
+      window.bookly.show(msg, error.message);
+      return;
+    }
+    await load();
+  });
+
+  await load();
+}
+
+async function loadAppointments(businessId) {
+  const list = document.querySelector('#appointmentsList');
+  const { data, error } = await window.bookly.db
+    .from('appointments')
+    .select('*,services(name)')
+    .eq('business_id', businessId)
+    .order('start_time', { ascending: false });
+
+  if (error) throw error;
+
+  list.innerHTML = (data || []).map(row => `
+    <div class="list-row">
+      <div>
+        <strong>${window.bookly.escape(row.customer_name)}</strong>
+        <div class="muted">${window.bookly.escape(row.services?.name || '')} · ${new Date(row.start_time).toLocaleString()}</div>
+      </div>
+      <select class="field" style="width:auto" data-status="${row.id}">
+        ${['pending', 'confirmed', 'completed', 'cancelled', 'no_show'].map(status =>
+          `<option value="${status}" ${status === row.status ? 'selected' : ''}>${status}</option>`
+        ).join('')}
+      </select>
+    </div>
+  `).join('') || '<div class="empty">No appointments.</div>';
+
+  list.addEventListener('change', async event => {
+    const appointmentId = event.target.dataset.status;
+    if (!appointmentId) return;
+    const { error: updateError } = await window.bookly.db
+      .from('appointments')
+      .update({ status: event.target.value })
+      .eq('id', appointmentId);
+    if (updateError) console.error(updateError);
+  });
+}
+
+async function initSettings(businessId) {
+  const form = document.querySelector('#settingsForm');
+  const msg = form.querySelector('[data-message]');
+  const { data: business, error } = await window.bookly.db
+    .from('businesses')
+    .select('*')
+    .eq('id', businessId)
+    .single();
+
+  if (error) throw error;
+
+  Object.keys(business).forEach(key => {
+    if (form.elements[key]) form.elements[key].value = business[key] ?? '';
+  });
+
+  const publicLink = document.querySelector('#publicLink');
+  if (publicLink) {
+    publicLink.value = `${location.origin}${location.pathname.replace('settings.html', 'business.html')}?business=${business.slug}`;
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const row = {};
+
+    ['name', 'business_type', 'description', 'email', 'phone', 'address', 'city', 'country', 'logo_url', 'timezone', 'currency']
+      .forEach(key => row[key] = values.get(key) || null);
+
+    const { error: updateError } = await window.bookly.db
+      .from('businesses')
+      .update(row)
+      .eq('id', businessId);
+
+    window.bookly.show(msg, updateError ? updateError.message : 'Settings saved.', updateError ? 'error' : 'success');
+  });
+}
+
+async function loadCustomerPortal() {
+  const user = await window.bookly.requireUser('customer');
+  if (!user) return;
+
+  const { data, error } = await window.bookly.db
+    .from('appointments')
+    .select('*,businesses(name),services(name)')
+    .eq('customer_id', user.id)
+    .order('start_time', { ascending: false });
+
+  if (error) throw error;
+
+  const list = document.querySelector('#customerAppointments');
+  list.innerHTML = (data || []).map(row => `
+    <div class="list-row">
+      <div>
+        <strong>${window.bookly.escape(row.businesses?.name || 'Business')}</strong>
+        <div class="muted">${window.bookly.escape(row.services?.name || '')} · ${new Date(row.start_time).toLocaleString()}</div>
+      </div>
+      <span class="pill">${window.bookly.escape(row.status)}</span>
+    </div>
+  `).join('') || '<div class="empty">No bookings yet.</div>';
+}
