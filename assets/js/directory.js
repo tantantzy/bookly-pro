@@ -1,0 +1,9 @@
+document.addEventListener('DOMContentLoaded',async()=>{
+ const grid=document.querySelector('#businessGrid'), search=document.querySelector('#businessSearch'), type=document.querySelector('#businessTypeFilter');
+ let businesses=[];
+ try{const {data,error}=await window.bookly.db.from('businesses').select('id,name,slug,business_type,description,city,country,phone,email,logo_url').eq('is_active',true).order('name'); if(error)throw error; businesses=data||[];}
+ catch(e){grid.innerHTML=`<div class="alert error full">${window.bookly.escape(e.message)}</div>`;return;}
+ [...new Set(businesses.map(x=>x.business_type).filter(Boolean))].sort().forEach(v=>type.insertAdjacentHTML('beforeend',`<option>${window.bookly.escape(v)}</option>`));
+ function render(){const q=search.value.toLowerCase(), t=type.value; const rows=businesses.filter(b=>(!q||`${b.name} ${b.description||''} ${b.city||''}`.toLowerCase().includes(q))&&(!t||b.business_type===t)); grid.innerHTML=rows.length?rows.map(b=>`<article class="card business-card"><div class="business-cover">${b.logo_url?`<img src="${window.bookly.escape(b.logo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:window.bookly.escape(b.name[0])}</div><div class="business-body"><span class="pill">${window.bookly.escape(b.business_type)}</span><h3>${window.bookly.escape(b.name)}</h3><p class="meta">${window.bookly.escape(b.description||'Book services with this business.')}</p><p class="meta">${window.bookly.escape([b.city,b.country].filter(Boolean).join(', '))}</p><a class="btn btn-primary" href="business.html?business=${encodeURIComponent(b.slug)}">View profile & book</a></div></article>`).join(''):'<div class="card empty full">No businesses found.</div>';}
+ search.addEventListener('input',render);type.addEventListener('change',render);render();
+});
