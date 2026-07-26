@@ -1,6 +1,6 @@
 // Enter these two values once from Supabase Project Settings > API.
-const SUPABASE_URL = 'https://uuhjpwposofrmuliwrrh.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_et94OA94Yc0N_mm6fVvOsg_R0qA4qD7';
+const SUPABASE_URL = 'https://rfpihfaksoatzghxlejw.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_BOwjACls7YxVfqQqIv8-4A_2oRraiYW';
 
 if (!window.supabase) throw new Error('Supabase JS failed to load.');
 if (SUPABASE_URL.includes('YOUR_PROJECT') || SUPABASE_ANON_KEY.includes('YOUR_')) {
