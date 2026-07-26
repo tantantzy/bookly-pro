@@ -1,1 +1,31 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="assets/css/styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script><title>Owner Dashboard</title></head><body data-page="dashboard"><header class="topbar"><div class="container nav"><a class="brand" href="index.html">Bookly <span>Pro</span></a><nav class="navlinks"><a href="index.html">Businesses</a><a href="booking.html">Book</a></nav><div class="actions"><a class="btn hide-mobile" href="customer-login.html">Customer</a><a class="btn btn-primary" href="owner-signup.html">Register Business</a></div></div></header><main class="page"><div class="container dashboard-layout"><aside class="card sidebar"><a href="dashboard.html">Dashboard</a><a href="appointments.html">Appointments</a><a href="services.html">Services</a><a href="staff.html">Staff</a><a href="settings.html">Settings</a><button class="btn" type="button" data-logout style="width:100%;margin-top:10px">Log out</button></aside><section id="dashboardMain"><div class="between"><div><span class="eyebrow">Owner workspace</span><h1 id="businessName" style="font-size:2.4rem">Dashboard</h1></div></div><div id="stats" class="stats"></div><article class="card pad"><h2>Recent appointments</h2><div id="recentAppointments" class="list"></div></article></section></div></main><script src="assets/js/dashboard.js"></script><footer class="footer"><div class="container">Bookly Pro V4</div></footer></body></html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6d4aff"><link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script>
+<title>Dashboard · Bookly Pro</title></head><body data-page="dashboard" class="owner-app">
+<div class="app-shell">
+<aside class="app-sidebar" id="appSidebar">
+  <a class="app-brand" href="dashboard.html"><span class="brand-mark">B</span><span>Bookly <b>Pro</b><small>V5</small></span></a>
+  <nav class="app-nav" aria-label="Owner navigation">
+    <a href="dashboard.html" data-nav="dashboard"><span>⌂</span>Dashboard</a>
+    <a href="appointments.html" data-nav="appointments"><span>◷</span>Appointments</a>
+    <a href="customers.html" data-nav="customers"><span>♙</span>Customers</a>
+    <a href="services.html" data-nav="services"><span>◇</span>Services</a>
+    <a href="staff.html" data-nav="staff"><span>♧</span>Staff</a>
+    <a href="reports.html" data-nav="reports"><span>↗</span>Reports</a>
+    <a href="settings.html" data-nav="settings"><span>⚙</span>Settings</a>
+  </nav>
+  <div class="sidebar-footer"><a class="public-site-link" href="index.html">↗ View marketplace</a><button class="sidebar-logout" type="button" data-logout>Log out</button></div>
+</aside>
+<div class="app-stage">
+<header class="app-header"><button class="icon-button mobile-menu" id="menuToggle" aria-label="Open navigation">☰</button><div class="header-context"><span id="headerBusiness">Owner workspace</span><small id="liveDate"></small></div><div class="header-actions"><a class="quick-book" href="booking.html">+ New booking</a><div class="notification-wrap"><button class="icon-button notification-button" id="notificationToggle" aria-label="Notifications">♢<span class="notification-badge hidden" id="notificationBadge">0</span></button><div class="notification-panel hidden" id="notificationPanel"><div class="notification-head"><strong>Notifications</strong><button class="text-button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"><div class="notification-empty">No new notifications.</div></div></div></div><div class="user-chip"><span class="user-avatar" id="userAvatar">O</span><span><strong id="userName">Owner</strong><small>Administrator</small></span></div></div></header>
+<main class="app-content">
+<section id="dashboardMain">
+<div class="page-heading"><div><span class="eyebrow">Business overview</span><h1 id="businessName">Dashboard</h1><p>Track today’s schedule, revenue and business activity.</p></div><a class="btn btn-primary" href="appointments.html">Manage appointments</a></div>
+<div id="stats" class="stats stats-v5"></div>
+<div class="dashboard-grid">
+ <article class="panel panel-wide"><div class="panel-head"><div><span class="eyebrow">Today</span><h2>Upcoming appointments</h2></div><a href="appointments.html">View all →</a></div><div id="todayAppointments" class="schedule-list"></div></article>
+ <article class="panel"><div class="panel-head"><div><span class="eyebrow">Snapshot</span><h2>This month</h2></div></div><div id="monthSnapshot" class="metric-stack"></div></article>
+ <article class="panel panel-wide"><div class="panel-head"><div><span class="eyebrow">Activity</span><h2>Recent appointments</h2></div></div><div id="recentAppointments" class="list"></div></article>
+ <article class="panel"><div class="panel-head"><div><span class="eyebrow">Quick actions</span><h2>Keep moving</h2></div></div><div class="quick-actions"><a href="services.html">◇ Add a service</a><a href="staff.html">♧ Add staff</a><a href="settings.html">⚙ Update profile</a><a href="reports.html">↗ View reports</a></div></article>
+</div></section></main><footer class="app-footer">Bookly Pro V5 · Built for modern service businesses</footer></div></div><div class="sidebar-backdrop" id="sidebarBackdrop"></div><script src="assets/js/v5-shell.js"></script><script src="assets/js/dashboard.js"></script></body></html>

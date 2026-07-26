@@ -1,34 +1,3 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  const main = document.querySelector('#dashboardMain');
-  try {
-    const user = await window.bookly.requireUser('owner');
-    if (!user) return;
-    const profile = await window.bookly.getProfile(user.id);
-    const { data: business, error: businessError } = await window.bookly.db.from('businesses').select('*').eq('id', profile.business_id).single();
-    if (businessError) throw businessError;
-    document.querySelector('#businessName').textContent = business.name;
 
-    const [appointmentsResult, servicesResult, staffResult, customerResult] = await Promise.all([
-      window.bookly.db.from('appointments').select('*', { count: 'exact', head: true }).eq('business_id', business.id),
-      window.bookly.db.from('services').select('*', { count: 'exact', head: true }).eq('business_id', business.id),
-      window.bookly.db.from('staff').select('*', { count: 'exact', head: true }).eq('business_id', business.id),
-      window.bookly.db.from('appointments').select('customer_email').eq('business_id', business.id)
-    ]);
-    [appointmentsResult, servicesResult, staffResult, customerResult].forEach(result => { if (result.error) throw result.error; });
-    const uniqueCustomers = new Set((customerResult.data || []).map(row => row.customer_email.toLowerCase())).size;
-    const stats = [
-      ['Appointments', appointmentsResult.count || 0],
-      ['Services', servicesResult.count || 0],
-      ['Staff', staffResult.count || 0],
-      ['Customers', uniqueCustomers]
-    ];
-    document.querySelector('#stats').innerHTML = stats.map(([label, value]) => `<article class="card stat"><span class="muted">${label}</span><strong>${value}</strong></article>`).join('');
-
-    const { data: recent, error: recentError } = await window.bookly.db.from('appointments').select('*,services(name)').eq('business_id', business.id).order('start_time', { ascending: false }).limit(8);
-    if (recentError) throw recentError;
-    document.querySelector('#recentAppointments').innerHTML = (recent || []).map(row => `<div class="list-row"><div><strong>${window.bookly.escape(row.customer_name)}</strong><div class="muted">${window.bookly.escape(row.services?.name || 'Service')} · ${new Date(row.start_time).toLocaleString()}</div></div><span class="pill">${window.bookly.escape(row.status)}</span></div>`).join('') || '<div class="empty">No appointments yet.</div>';
-  } catch (error) {
-    console.error(error);
-    main.innerHTML = `<div class="alert error">${window.bookly.escape(error.message)}</div>`;
-  }
-});
+document.addEventListener('DOMContentLoaded',async()=>{const main=document.querySelector('#dashboardMain');try{const user=await window.bookly.requireUser('owner');if(!user)return;const profile=await window.bookly.getProfile(user.id);const{data:business,error:be}=await window.bookly.db.from('businesses').select('*').eq('id',profile.business_id).single();if(be)throw be;document.querySelector('#businessName').textContent=`Welcome back`;const now=new Date(),todayStart=new Date(now);todayStart.setHours(0,0,0,0);const todayEnd=new Date(todayStart);todayEnd.setDate(todayEnd.getDate()+1);const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+const [{data:appointments,error:ae},{data:services,error:se},{data:staff,error:ste}]=await Promise.all([window.bookly.db.from('appointments').select('*,services(name)').eq('business_id',business.id).order('start_time',{ascending:false}),window.bookly.db.from('services').select('*').eq('business_id',business.id),window.bookly.db.from('staff').select('*').eq('business_id',business.id)]);if(ae||se||ste)throw ae||se||ste;const a=appointments||[],today=a.filter(x=>{const d=new Date(x.start_time);return d>=todayStart&&d<todayEnd}),month=a.filter(x=>new Date(x.start_time)>=monthStart),revenue=month.filter(x=>x.status!=='cancelled'&&x.status!=='no_show').reduce((s,x)=>s+Number(x.total_price||0),0),customers=new Set(a.map(x=>String(x.customer_email||'').toLowerCase()).filter(Boolean)).size;const stats=[['◷','Today',today.length,'appointments'],['$', 'Monthly revenue',window.bookly.money(revenue,business.currency),'booked value'],['◇','Services',(services||[]).length,'active catalog'],['♙','Customers',customers,'unique clients']];document.querySelector('#stats').innerHTML=stats.map(([i,l,v,s])=>`<article class="stat"><span class="stat-icon">${i}</span><span class="muted">${l}</span><strong>${v}</strong><small>${s}</small></article>`).join('');document.querySelector('#todayAppointments').innerHTML=today.length?today.sort((x,y)=>new Date(x.start_time)-new Date(y.start_time)).map(x=>`<div class="schedule-item"><div class="schedule-time">${new Date(x.start_time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div><div><strong>${window.bookly.escape(x.customer_name)}</strong><div class="muted">${window.bookly.escape(x.services?.name||'Service')}</div></div><span class="pill"><i class="status-dot"></i>${window.bookly.escape(x.status)}</span></div>`).join(''):'<div class="empty">No appointments scheduled today.</div>';const completed=month.filter(x=>x.status==='completed').length,cancelled=month.filter(x=>x.status==='cancelled').length;document.querySelector('#monthSnapshot').innerHTML=`<div class="metric-line"><span>Total bookings</span><strong>${month.length}</strong></div><div class="metric-line"><span>Completed</span><strong>${completed}</strong></div><div class="metric-line"><span>Cancelled</span><strong>${cancelled}</strong></div><div class="metric-line"><span>Team members</span><strong>${(staff||[]).length}</strong></div>`;document.querySelector('#recentAppointments').innerHTML=a.slice(0,7).map(x=>`<div class="list-row"><div><strong>${window.bookly.escape(x.customer_name)}</strong><div class="muted">${window.bookly.escape(x.services?.name||'Service')} · ${new Date(x.start_time).toLocaleString()}</div></div><span class="pill">${window.bookly.escape(x.status)}</span></div>`).join('')||'<div class="empty">No appointments yet.</div>';}catch(e){console.error(e);main.innerHTML=`<div class="alert error">${window.bookly.escape(e.message)}</div>`}});
