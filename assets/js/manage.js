@@ -139,19 +139,98 @@ async function initStaff(businessId) {
 
 async function loadAppointments(businessId) {
   const list = document.querySelector('#appointmentsList');
-  const { data, error } = await window.bookly.db.from('appointments').select('*,services(name)').eq('business_id', businessId).order('start_time', { ascending: false });
+  const { data, error } = await window.bookly.db
+    .from('appointments')
+    .select('*,services(name,duration_minutes),staff(name,title)')
+    .eq('business_id', businessId)
+    .order('start_time', { ascending: false });
   if (error) throw error;
 
-  list.innerHTML = (data || []).map(row => `
-    <div class="list-row"><div><strong>${window.bookly.escape(row.customer_name)}</strong><div class="muted">${window.bookly.escape(row.services?.name || '')} · ${new Date(row.start_time).toLocaleString()}</div></div><select class="field" style="width:auto" data-status="${row.id}">${['pending','confirmed','completed','cancelled','no_show'].map(status => `<option value="${status}" ${status === row.status ? 'selected' : ''}>${status}</option>`).join('')}</select></div>
-  `).join('') || '<div class="empty">No appointments.</div>';
+  const statuses = ['pending', 'confirmed', 'completed', 'cancelled', 'no_show'];
+  const formatDate = value => value ? new Date(value).toLocaleString() : '—';
+  const formatMoney = value => Number(value || 0).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
+
+  list.innerHTML = (data || []).map((row, index) => {
+    const detailsId = `appointment-details-${index}`;
+    return `
+      <article class="appointment-card">
+        <div class="appointment-summary">
+          <div class="appointment-main">
+            <strong>${window.bookly.escape(row.customer_name || 'Customer')}</strong>
+            <div class="muted">${window.bookly.escape(row.services?.name || 'Service')} · ${formatDate(row.start_time)}</div>
+            <div class="appointment-staff-line">Staff: <b>${window.bookly.escape(row.staff?.name || 'Any available staff')}</b></div>
+          </div>
+
+          <div class="appointment-actions">
+            <button class="btn appointment-details-toggle" type="button"
+              data-details-toggle="${detailsId}" aria-expanded="false">
+              View details
+            </button>
+            <select class="field appointment-status" data-status="${row.id}" aria-label="Appointment status">
+              ${statuses.map(status => `<option value="${status}" ${status === row.status ? 'selected' : ''}>${status.replace('_', ' ')}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="appointment-details" id="${detailsId}" hidden>
+          <div class="appointment-detail-grid">
+            <div><span>Customer</span><strong>${window.bookly.escape(row.customer_name || '—')}</strong></div>
+            <div><span>Email</span><strong>${window.bookly.escape(row.customer_email || '—')}</strong></div>
+            <div><span>Phone</span><strong>${window.bookly.escape(row.customer_phone || '—')}</strong></div>
+            <div><span>Service</span><strong>${window.bookly.escape(row.services?.name || '—')}</strong></div>
+            <div><span>Assigned staff</span><strong>${window.bookly.escape(row.staff?.name || 'Any available staff')}</strong></div>
+            <div><span>Staff title</span><strong>${window.bookly.escape(row.staff?.title || '—')}</strong></div>
+            <div><span>Appointment time</span><strong>${formatDate(row.start_time)}</strong></div>
+            <div><span>End time</span><strong>${formatDate(row.end_time)}</strong></div>
+            <div><span>Duration</span><strong>${row.services?.duration_minutes ? `${row.services.duration_minutes} minutes` : '—'}</strong></div>
+            <div><span>Total price</span><strong>${formatMoney(row.total_price)}</strong></div>
+            <div><span>Booked on</span><strong>${formatDate(row.created_at)}</strong></div>
+            <div><span>Status</span><strong class="status-text">${window.bookly.escape((row.status || '').replace('_', ' '))}</strong></div>
+          </div>
+          <div class="appointment-notes">
+            <span>Customer notes</span>
+            <p>${window.bookly.escape(row.notes || 'No notes provided.')}</p>
+          </div>
+        </div>
+      </article>`;
+  }).join('') || '<div class="empty">No appointments.</div>';
+
+  list.addEventListener('click', event => {
+    const button = event.target.closest('[data-details-toggle]');
+    if (!button) return;
+    const details = document.getElementById(button.dataset.detailsToggle);
+    if (!details) return;
+    const willOpen = details.hidden;
+    details.hidden = !willOpen;
+    button.setAttribute('aria-expanded', String(willOpen));
+    button.textContent = willOpen ? 'Hide details' : 'View details';
+  });
 
   list.addEventListener('change', async event => {
     const appointmentId = event.target.dataset.status;
     if (!appointmentId) return;
-    const { error: updateError } = await window.bookly.db.from('appointments').update({ status: event.target.value }).eq('id', appointmentId);
-    if (updateError) console.error(updateError);
-    else await window.bookly.refreshNotifications?.();
+
+    event.target.disabled = true;
+    const newStatus = event.target.value;
+    const { error: updateError } = await window.bookly.db
+      .from('appointments')
+      .update({ status: newStatus })
+      .eq('id', appointmentId);
+    event.target.disabled = false;
+
+    if (updateError) {
+      console.error(updateError);
+      alert(updateError.message);
+      return;
+    }
+
+    const card = event.target.closest('.appointment-card');
+    const statusText = card?.querySelector('.status-text');
+    if (statusText) statusText.textContent = newStatus.replace('_', ' ');
+    await window.bookly.refreshNotifications?.();
   });
 }
 
