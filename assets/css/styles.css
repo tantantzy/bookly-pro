@@ -19,3 +19,6 @@
 @media(max-width:1100px){.customer-grid{grid-template-columns:repeat(2,1fr)}.stats-v5{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:850px){.app-sidebar{transform:translateX(-100%);transition:.25s}.app-sidebar.open{transform:none}.app-stage{margin-left:0}.mobile-menu{display:block}.app-header{padding:0 16px}.app-content{padding:24px 16px}.sidebar-backdrop.show{display:block;position:fixed;inset:0;background:#11182766;z-index:50}.dashboard-grid,.content-split,.reports-grid{grid-template-columns:1fr}.form-panel{position:static}.user-chip>span:last-child,.quick-book{display:none}}
 @media(max-width:600px){.page-heading{align-items:flex-start;flex-direction:column}.stats-v5,.customer-grid{grid-template-columns:1fr}.header-context{display:none}.app-content{padding:20px 11px}.panel{padding:16px}.toolbar-panel{align-items:stretch;flex-direction:column}.field.compact{width:100%}.schedule-item{grid-template-columns:58px 1fr}.schedule-item>.pill{grid-column:2}.quick-actions{grid-template-columns:1fr}.copy-field{flex-direction:column}}
+
+/* V5.1: ensure the HTML hidden attribute overrides component display rules. */
+[hidden]{display:none!important}
