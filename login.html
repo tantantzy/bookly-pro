@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/common.js"></script>
+  <title>Login · Bookly Pro</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">Bookly <span>Pro</span></a>
+      <div class="actions">
+        <a class="btn hide-mobile" href="customer-signup.html">Create customer account</a>
+        <a class="btn" href="owner-signup.html">Register business</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page auth-page">
+    <div class="container">
+      <section class="card pad form-card auth-card">
+        <span class="eyebrow">Welcome back</span>
+        <h1 class="auth-title">Login</h1>
+        <p class="meta auth-intro">Choose your account type, then enter your email and password.</p>
+
+        <form id="unifiedLoginForm" data-login-form class="form-grid">
+          <div data-message class="alert hidden full"></div>
+
+          <fieldset class="role-selector full" aria-label="Account type">
+            <legend class="sr-only">Account type</legend>
+            <label class="role-option">
+              <input type="radio" name="role" value="customer" checked>
+              <span><strong>Customer</strong><small>Manage your appointments</small></span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="role" value="owner">
+              <span><strong>Business owner</strong><small>Manage your business</small></span>
+            </label>
+          </fieldset>
+
+          <label class="full auth-field-label">Email
+            <input class="field" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+          </label>
+          <label class="full auth-field-label">Password
+            <input class="field" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </label>
+
+          <button class="btn btn-primary full" type="submit">Login</button>
+          <div class="auth-register-links full">
+            <span>New customer? <a href="customer-signup.html">Create an account</a></span>
+            <span>New business? <a href="owner-signup.html">Register your business</a></span>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/auth.js"></script>
+  <footer class="footer"><div class="container">Bookly Pro V5</div></footer>
+</body>
+</html>

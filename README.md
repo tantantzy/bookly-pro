@@ -1,21 +1,18 @@
-# Bookly Pro V5.4.2 — Time Availability Fix
+# Bookly Pro V5.5 — Unified Login Patch
 
-This patch fixes customer time slots appearing eight hours late (for example, 5:00 PM instead of 9:00 AM).
+## Replace / add these files
 
-## Install
+- `index.html` — changes the top-right **Register Business** button to **Login**.
+- `login.html` — new unified Customer / Business Owner login page.
+- `assets/js/auth.js` — supports role selection and sends each role to the correct portal.
+- `assets/js/common.js` — protected pages now redirect to the unified login page.
+- `assets/css/styles.css` — styling for the account-type selector.
 
-1. In Supabase SQL Editor, run:
-   `supabase/migrations/v5_4_2_booking_timezone_fix.sql`
-2. Replace this file in GitHub:
-   `assets/js/booking.js`
-3. Commit the changes and wait for GitHub Pages to redeploy.
-4. Refresh the booking page with Ctrl+F5.
+## Installation
 
-## What changed
+Copy the files into the matching locations in your GitHub repository and commit the changes.
+No Supabase migration is required.
 
-- Existing businesses still using the old `UTC` default are changed to `Asia/Manila`.
-- New businesses default to `Asia/Manila`.
-- Booking times are displayed using the business timezone instead of the browser's implicit timezone.
-- The minimum selectable booking date also follows the business timezone.
+## Included next update
 
-No HTML or CSS files are required.
+The login flow is now role-aware. Logged-out customers are redirected to `login.html?role=customer`; logged-out owners are redirected to `login.html?role=owner`. Existing separate login pages can remain in the repository for compatibility.

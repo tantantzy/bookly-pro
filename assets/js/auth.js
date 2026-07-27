@@ -109,13 +109,24 @@
       });
     }
 
+
+    const unifiedLogin = document.getElementById('unifiedLoginForm');
+    if (unifiedLogin) {
+      const requestedRole = new URLSearchParams(location.search).get('role');
+      const roleInput = unifiedLogin.querySelector(`input[name="role"][value="${requestedRole}"]`);
+      if (roleInput) roleInput.checked = true;
+    }
+
     document.querySelectorAll('[data-login-form]').forEach(form => {
       form.addEventListener('submit', event => {
         event.preventDefault();
         withBusy(form, 'Signing in…', async () => {
           try {
             const values = new FormData(form);
-            const expectedRole = form.dataset.role;
+            const expectedRole = form.dataset.role || String(values.get('role') || '').trim();
+            if (!['owner', 'customer'].includes(expectedRole)) {
+              throw new Error('Choose Customer or Business owner before signing in.');
+            }
             const { data, error } = await db().auth.signInWithPassword({
               email: String(values.get('email') || '').trim(),
               password: String(values.get('password') || '')
@@ -124,7 +135,7 @@
             const profile = await profileFor(data.user.id);
             if (profile.role !== expectedRole) {
               await db().auth.signOut();
-              throw new Error(`This is a ${profile.role} account. Use the correct login page.`);
+              throw new Error(`This email belongs to a ${profile.role} account. Select the matching account type and try again.`);
             }
             location.assign(expectedRole === 'owner' ? 'dashboard.html' : 'customer-portal.html');
           } catch (error) {

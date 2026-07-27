@@ -40,7 +40,7 @@ window.bookly.requireUser = async (role = null) => {
   const user = session?.user || null;
 
   if (sessionError || !user) {
-    location.assign(role === 'customer' ? 'customer-login.html' : 'owner-login.html');
+    location.assign(`login.html?role=${role === 'customer' ? 'customer' : 'owner'}`);
     return null;
   }
 
