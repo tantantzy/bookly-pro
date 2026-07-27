@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6d4aff"><link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script>
+<title>Calendar · Bookly Pro</title></head><body data-page="calendar" class="owner-app">
+<div class="app-shell">
+<aside class="app-sidebar" id="appSidebar">
+  <a class="app-brand" href="dashboard.html"><span class="brand-mark">B</span><span>Bookly <b>Pro</b><small>V5</small></span></a>
+  <nav class="app-nav" aria-label="Owner navigation">
+    <a href="dashboard.html" data-nav="dashboard"><span>⌂</span>Dashboard</a>
+    <a href="appointments.html" data-nav="appointments"><span>◷</span>Appointments</a>
+    <a href="calendar.html" data-nav="calendar"><span>▦</span>Calendar</a>
+    <a href="customers.html" data-nav="customers"><span>♙</span>Customers</a>
+    <a href="services.html" data-nav="services"><span>◇</span>Services</a>
+    <a href="staff.html" data-nav="staff"><span>♧</span>Staff</a>
+    <a href="reports.html" data-nav="reports"><span>↗</span>Reports</a>
+    <a href="settings.html" data-nav="settings"><span>⚙</span>Settings</a>
+  </nav>
+  <div class="sidebar-footer"><a class="public-site-link" href="index.html">↗ View marketplace</a><button class="sidebar-logout" type="button" data-logout>Log out</button></div>
+</aside>
+<div class="app-stage">
+<header class="app-header"><button class="icon-button mobile-menu" id="menuToggle" aria-label="Open navigation">☰</button><div class="header-context"><span id="headerBusiness">Owner workspace</span><small id="liveDate"></small></div><div class="header-actions"><div class="notification-wrap"><button class="icon-button notification-button" id="notificationToggle" aria-label="Notifications">♢<span class="notification-badge hidden" id="notificationBadge">0</span></button><div class="notification-panel hidden" id="notificationPanel"><div class="notification-head"><strong>Notifications</strong><button class="text-button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"><div class="notification-empty">No new notifications.</div></div></div></div><div class="user-chip"><span class="user-avatar" id="userAvatar">O</span><span><strong id="userName">Owner</strong><small>Administrator</small></span></div></div></header>
+<main class="app-content">
+<section>
+  <div class="page-heading"><div><span class="eyebrow">Schedule</span><h1>Calendar</h1><p>See appointments, staff availability and time off in one place.</p></div></div>
+  <div class="panel calendar-toolbar">
+    <div class="calendar-nav-controls"><button class="btn" id="calendarPrev" type="button" aria-label="Previous period">←</button><button class="btn" id="calendarToday" type="button">Today</button><button class="btn" id="calendarNext" type="button" aria-label="Next period">→</button><strong id="calendarTitle"></strong></div>
+    <div class="calendar-filters"><select class="field compact" id="calendarStaff"><option value="">All staff</option></select><select class="field compact" id="calendarService"><option value="">All services</option></select><select class="field compact" id="calendarStatus"><option value="">All statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="no_show">No show</option></select><div class="calendar-view-switch" role="group" aria-label="Calendar view"><button type="button" data-calendar-view="day">Day</button><button type="button" data-calendar-view="week" class="active">Week</button><button type="button" data-calendar-view="month">Month</button></div></div>
+  </div>
+  <div class="calendar-legend"><span><i class="legend-dot pending"></i>Pending</span><span><i class="legend-dot confirmed"></i>Confirmed</span><span><i class="legend-dot completed"></i>Completed</span><span><i class="legend-dot unavailable"></i>Unavailable</span></div>
+  <div class="panel calendar-panel"><div id="calendarLoading" class="empty">Loading calendar…</div><div id="calendarRoot"></div></div>
+</section>
+</main><footer class="app-footer">Bookly Pro V5 · Built for modern service businesses</footer></div></div><div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<div class="calendar-modal hidden" id="calendarModal" role="dialog" aria-modal="true" aria-labelledby="calendarModalTitle"><div class="calendar-dialog"><button class="icon-button calendar-modal-close" type="button" data-calendar-close aria-label="Close">×</button><span class="eyebrow">Appointment</span><h2 id="calendarModalTitle">Appointment details</h2><div id="calendarModalBody" class="appointment-details calendar-modal-details"></div><label class="calendar-status-field">Status<select class="field" id="calendarModalStatus"><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="no_show">No show</option></select></label><div class="between"><span id="calendarModalMessage" class="muted"></span><a class="btn" href="appointments.html">Open appointments</a></div></div></div>
+<script src="assets/js/v5-shell.js"></script><script src="assets/js/calendar.js"></script></body></html>

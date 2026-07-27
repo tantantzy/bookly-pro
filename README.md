@@ -1,22 +1,25 @@
-# Bookly Pro V5.3 patch
+# Bookly Pro V5.4 — Calendar patch
 
-## Install
+Replace/add only these files in the repository root:
 
-1. In Supabase, open **SQL Editor**.
-2. Run `supabase/migrations/v5_3_staff_availability.sql` once.
-3. Upload the other three files to the same paths in the GitHub repository, replacing the current versions:
-   - `staff.html`
-   - `assets/js/manage.js`
-   - `assets/css/styles.css`
-4. Wait for GitHub Pages to redeploy, then hard-refresh the Staff page.
+- `calendar.html` (new)
+- `assets/js/calendar.js` (new)
+- `assets/js/v5-shell.js` (replace)
+- `assets/css/styles.css` (replace)
+
+No SQL migration is required. V5.3 staff availability tables should already be installed.
 
 ## Included
 
-- Weekly working schedules per staff member
-- One recurring break per working day
-- Date-range time off
-- Booking slots filtered by schedules, breaks, leave, and existing appointments
-- Server-side double-booking protection
-- Existing staff without a custom schedule continue using business opening hours
+- Day, week and month calendar views
+- Previous, next and Today navigation
+- Staff, service and status filters
+- Appointment details modal
+- Quick appointment status updates
+- Staff working-hours and time-off overlays when a staff filter is selected
+- Responsive mobile layout
+- Calendar link added automatically to all owner sidebars
 
-No existing records are deleted by the migration.
+## Deployment
+
+Upload the four files to the matching paths in GitHub, commit, and allow GitHub Pages to refresh.

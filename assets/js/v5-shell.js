@@ -17,3 +17,16 @@
  document.querySelector('#copyPublicLink')?.addEventListener('click',async()=>{const input=document.querySelector('#publicLink');if(!input)return;await navigator.clipboard.writeText(input.value);document.querySelector('#copyPublicLink').textContent='Copied';setTimeout(()=>document.querySelector('#copyPublicLink').textContent='Copy',1200)});
  hydrate();
 })();
+
+// V5.4: expose the calendar throughout the owner workspace without replacing every HTML page.
+document.addEventListener('DOMContentLoaded',()=>{
+  const nav=document.querySelector('.app-nav');
+  if(!nav||nav.querySelector('[data-nav="calendar"]'))return;
+  const appointments=nav.querySelector('[data-nav="appointments"]');
+  const link=document.createElement('a');
+  link.href='calendar.html';
+  link.dataset.nav='calendar';
+  link.innerHTML='<span>▦</span>Calendar';
+  appointments?.insertAdjacentElement('afterend',link);
+  if(document.body.dataset.page==='calendar')link.classList.add('active');
+});
