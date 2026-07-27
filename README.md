@@ -1,25 +1,10 @@
-# Bookly Pro V5.4 — Calendar patch
+# Bookly Pro V5.4.1 Staff Page Fix
 
-Replace/add only these files in the repository root:
+Replace only these files in the repository:
 
-- `calendar.html` (new)
-- `assets/js/calendar.js` (new)
-- `assets/js/v5-shell.js` (replace)
-- `assets/css/styles.css` (replace)
+- `staff.html`
+- `assets/js/manage.js`
 
-No SQL migration is required. V5.3 staff availability tables should already be installed.
+This restores the missing staff schedule modal required by V5.3 and prevents the page from failing with `Cannot read properties of null (reading 'addEventListener')`.
 
-## Included
-
-- Day, week and month calendar views
-- Previous, next and Today navigation
-- Staff, service and status filters
-- Appointment details modal
-- Quick appointment status updates
-- Staff working-hours and time-off overlays when a staff filter is selected
-- Responsive mobile layout
-- Calendar link added automatically to all owner sidebars
-
-## Deployment
-
-Upload the four files to the matching paths in GitHub, commit, and allow GitHub Pages to refresh.
+No database migration is required. The V5.3 staff availability migration must already be installed for scheduling features to save correctly.

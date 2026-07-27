@@ -21,4 +21,27 @@
 <header class="app-header"><button class="icon-button mobile-menu" id="menuToggle" aria-label="Open navigation">☰</button><div class="header-context"><span id="headerBusiness">Owner workspace</span><small id="liveDate"></small></div><div class="header-actions"><div class="notification-wrap"><button class="icon-button notification-button" id="notificationToggle" aria-label="Notifications">♢<span class="notification-badge hidden" id="notificationBadge">0</span></button><div class="notification-panel hidden" id="notificationPanel"><div class="notification-head"><strong>Notifications</strong><button class="text-button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"><div class="notification-empty">No new notifications.</div></div></div></div><div class="user-chip"><span class="user-avatar" id="userAvatar">O</span><span><strong id="userName">Owner</strong><small>Administrator</small></span></div></div></header>
 <main class="app-content">
 <section><div class="page-heading"><div><span class="eyebrow">Team</span><h1>Staff</h1><p>Manage your team, service assignments and availability.</p></div></div>
-<div class="content-split"><article class="panel form-panel"><div class="panel-head"><div><h2>Add staff member</h2><p>Connect team members to the services they provide.</p></div></div><form id="manageForm" class="form-grid"><div data-message class="alert hidden full"></div><label class="full">Name<input class="field" name="name" placeholder="Full name" required></label><label class="full">Position<input class="field" name="title" placeholder="Role or title"></label><fieldset class="full service-picker"><legend>Assigned services</legend><div id="staffServiceOptions" class="service-check-grid"><span class="muted">Loading services...</span></div></fieldset><label>Email<input class="field" type="email" name="email" autocomplete="email" placeholder="name@example.com"></label><label>Phone<input class="field" name="phone" placeholder="Phone"></label><button class="btn btn-primary full" type="submit">Add staff member</button></form></article><div><div class="section-label"><h2>Your team</h2></div><div id="manageList" class="list"></div></div></div></section></main><footer class="app-footer">Bookly Pro V5 · Built for modern service businesses</footer></div></div><div class="sidebar-backdrop" id="sidebarBackdrop"></div><script src="assets/js/v5-shell.js"></script><script src="assets/js/manage.js"></script></body></html>
+<div class="content-split"><article class="panel form-panel"><div class="panel-head"><div><h2>Add staff member</h2><p>Connect team members to the services they provide.</p></div></div><form id="manageForm" class="form-grid"><div data-message class="alert hidden full"></div><label class="full">Name<input class="field" name="name" placeholder="Full name" required></label><label class="full">Position<input class="field" name="title" placeholder="Role or title"></label><fieldset class="full service-picker"><legend>Assigned services</legend><div id="staffServiceOptions" class="service-check-grid"><span class="muted">Loading services...</span></div></fieldset><label>Email<input class="field" type="email" name="email" autocomplete="email" placeholder="name@example.com"></label><label>Phone<input class="field" name="phone" placeholder="Phone"></label><button class="btn btn-primary full" type="submit">Add staff member</button></form></article><div><div class="section-label"><h2>Your team</h2></div><div id="manageList" class="list"></div></div></div></section></main><footer class="app-footer">Bookly Pro V5 · Built for modern service businesses</footer></div></div><div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<div class="schedule-modal" id="scheduleModal" hidden role="dialog" aria-modal="true" aria-labelledby="scheduleStaffName">
+  <div class="schedule-dialog">
+    <div class="schedule-modal-head">
+      <div><span class="eyebrow">Availability</span><h2 id="scheduleStaffName">Staff schedule</h2><p>Set weekly working hours, breaks, and time off.</p></div>
+      <button class="icon-button" type="button" data-close-schedule aria-label="Close schedule">×</button>
+    </div>
+    <div id="scheduleMessage" class="alert hidden"></div>
+    <form id="scheduleForm">
+      <div id="scheduleRows" class="schedule-editor"></div>
+      <div class="schedule-actions"><button class="btn btn-primary" type="submit">Save weekly schedule</button></div>
+    </form>
+    <div class="schedule-divider"></div>
+    <div class="panel-head"><div><h3>Time off</h3><p>Block dates when this staff member is unavailable.</p></div></div>
+    <form id="timeOffForm" class="time-off-form">
+      <label>From<input class="field" type="date" name="starts_on" required></label>
+      <label>To<input class="field" type="date" name="ends_on" required></label>
+      <label class="time-off-reason">Reason<input class="field" name="reason" placeholder="Vacation, leave, training…"></label>
+      <button class="btn" type="submit">Add time off</button>
+    </form>
+    <div id="timeOffList" class="time-off-list"></div>
+  </div>
+</div>
+<script src="assets/js/v5-shell.js"></script><script src="assets/js/manage.js"></script></body></html>
