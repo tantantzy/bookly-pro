@@ -1,1 +1,56 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="assets/css/styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script><title>Bookly Pro</title></head><body><header class="topbar"><div class="container nav"><a class="brand" href="index.html">Bookly <span>Pro</span></a><nav class="navlinks"><a href="index.html">Businesses</a><a href="booking.html">Book</a></nav><div class="actions"><a class="btn hide-mobile" href="customer-signup.html">Create account</a><a class="btn btn-primary" href="login.html">Login</a></div></div></header><section class="hero"><div class="container hero-grid"><div><span class="eyebrow">Local services marketplace</span><h1>Find a business and book in minutes.</h1><p>Browse salons, spas, clinics, tutors, trainers, and other appointment-based businesses.</p></div><div class="card pad"><h2>For business owners</h2><p class="meta">Create your business profile, publish services, add staff, and receive appointments.</p><a class="btn btn-primary" href="owner-signup.html">Register your business</a></div></div></section><main class="section"><div class="container"><div class="section-head"><div><span class="eyebrow">Directory</span><h2>Businesses</h2></div></div><div class="toolbar"><input id="businessSearch" class="field" placeholder="Search by business, service, or city"><select id="businessTypeFilter" class="field"><option value="">All business types</option></select></div><div id="businessGrid" class="business-grid"></div></div></main><script src="assets/js/directory.js"></script><footer class="footer"><div class="container">Bookly Pro V5</div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/common.js"></script>
+  <title>Bookly Pro</title>
+</head>
+<body class="home-page">
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">Bookly <span>Pro</span></a>
+      <div class="actions">
+        <a class="btn hide-mobile" href="customer-login.html">Customer</a>
+        <a class="btn btn-primary" href="owner-login.html">Log in</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <section class="home-hero">
+      <div class="container home-hero-grid">
+        <div class="home-copy">
+          <span class="eyebrow">Local services marketplace</span>
+          <h1>Find a business and book in minutes.</h1>
+          <p>Browse salons, spas, clinics, tutors, trainers, and other appointment-based businesses.</p>
+          <div class="home-actions">
+            <a class="btn btn-primary" href="directory.html">Browse businesses</a>
+            <a class="btn" href="customer-portal.html">My appointments</a>
+          </div>
+        </div>
+
+        <aside class="card home-owner-card">
+          <span class="eyebrow">For business owners</span>
+          <h2>Grow your business with Bookly Pro</h2>
+          <p class="meta">Create your profile, publish services, manage staff, and receive appointments online.</p>
+          <a class="btn btn-primary" href="owner-signup.html">Register your business</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="home-steps" aria-label="How Bookly Pro works">
+      <div class="container home-step-grid">
+        <article><strong>1</strong><div><h3>Discover</h3><p>Find the right local business.</p></div></article>
+        <article><strong>2</strong><div><h3>Book</h3><p>Choose a service, staff member, and time.</p></div></article>
+        <article><strong>3</strong><div><h3>Confirm</h3><p>Review your appointment in the customer portal.</p></div></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer home-footer"><div class="container">Bookly Pro</div></footer>
+</body>
+</html>

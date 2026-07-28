@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/common.js"></script>
+  <title>Business Directory | Bookly Pro</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">Bookly <span>Pro</span></a>
+      <div class="actions">
+        <a class="btn" href="customer-portal.html">My appointments</a>
+        <a class="btn btn-primary" href="customer-login.html">Customer login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page directory-page">
+    <div class="container">
+      <div class="section-head directory-heading">
+        <div>
+          <span class="eyebrow">Local services marketplace</span>
+          <h1>Directory businesses</h1>
+          <p class="meta">Discover a business, view its services, and book an appointment.</p>
+        </div>
+      </div>
+
+      <div class="card directory-toolbar">
+        <label class="directory-search">
+          <span class="sr-only">Search businesses</span>
+          <input id="businessSearch" class="field" placeholder="Search by business, service, or city">
+        </label>
+        <label>
+          <span class="sr-only">Business type</span>
+          <select id="businessTypeFilter" class="field">
+            <option value="">All business types</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="businessGrid" class="business-grid directory-grid"></div>
+    </div>
+  </main>
+
+  <script src="assets/js/directory.js"></script>
+  <footer class="footer"><div class="container">Bookly Pro</div></footer>
+</body>
+</html>
